@@ -76,6 +76,11 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
+        input[readonly] {
+            background-color: #e5e7eb;
+            cursor: not-allowed;
+        }
+
         button {
             width: 100%;
             padding: 12px;
@@ -146,13 +151,19 @@
     <form id="joinerForm">
         
         <div class="section-title">Job Type</div>
-        <div class="form-group">
-            <label>Type</label>
-            <select name="Type" required>
-                <option value="">Select...</option>
-                <option value="OnRole">OnRole</option>
-                <option value="OffRole">OffRole</option>
-            </select>
+        <div class="row">
+            <div class="form-group">
+                <label>Type</label>
+                <select name="Type" id="jobType" required onchange="toggleJobType()">
+                    <option value="">Select...</option>
+                    <option value="OnRole">OnRole</option>
+                    <option value="OffRole">OffRole</option>
+                </select>
+            </div>
+            <div class="form-group" id="contractGroup">
+                <label>Contract</label>
+                <input type="text" name="ContractID" id="contractInput" required>
+            </div>
         </div>
 
         <div class="section-title">Personal Details</div>
@@ -365,6 +376,21 @@
 </div>
 
 <script>
+    function toggleJobType() {
+        const type = document.getElementById('jobType').value;
+        const contractInput = document.getElementById('contractInput');
+        
+        if (type === 'OnRole') {
+            contractInput.value = 'NA';
+            contractInput.readOnly = true;
+        } else {
+            if (contractInput.value === 'NA') {
+                contractInput.value = '';
+            }
+            contractInput.readOnly = false;
+        }
+    }
+
     function toggleFamilyFields() {
         const marital = document.getElementById('maritalStatus').value;
         const gender = document.getElementById('gender').value;
