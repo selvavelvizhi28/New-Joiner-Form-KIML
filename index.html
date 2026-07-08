@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Joiner Registration</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            max-width: 600px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="date"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #qr-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .row .form-group {
+            flex: 1;
+        }
+
+        @media (max-width: 480px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 5px;
+            color: var(--text-main);
+        }
+    </style>
+    <!-- Include QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<div class="container" id="form-container">
+    <h1>New Joiner Form</h1>
+    <p class="subtitle">Please fill in your details to generate your onboarding QR code.</p>
+
+    <form id="joinerForm">
+        <div class="section-title">Personal Details</div>
+        
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="Name" required>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Aadhar Number</label>
+                <input type="text" name="AadharNumber" required>
+            </div>
+            <div class="form-group">
+                <label>DOB</label>
+                <input type="date" name="DOB" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Gender</label>
+                <select name="Gender" id="gender" required>
+                    <option value="">Select...</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                    <option value="O">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Blood Group</label>
+                <input type="text" name="BloodGroup" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" name="MobileNumber" required>
+            </div>
+            <div class="form-group">
+                <label>Emergency Number</label>
+                <input type="text" name="EmergencyNumber" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Qualification</label>
+            <input type="text" name="Qualification" required>
+        </div>
+
+        <div class="section-title">Family & Marital Status</div>
+
+        <div class="form-group">
+            <label>Marital Status</label>
+            <select name="MaritalStatus" id="maritalStatus" required onchange="toggleFamilyFields()">
+                <option value="Unmarried">Unmarried</option>
+                <option value="Married">Married</option>
+            </select>
+        </div>
+
+        <div id="marriedFields" class="hidden">
+            <div class="form-group" id="spouseGroup">
+                <label>Spouse / Husband Name</label>
+                <input type="text" name="SpouseName" id="spouseName">
+            </div>
+            <div class="form-group">
+                <label>Children's Name (if any)</label>
+                <input type="text" name="ChildrensName">
+            </div>
+        </div>
+
+        <div id="unmarriedFields">
+            <div class="row">
+                <div class="form-group">
+                    <label>Father's Name</label>
+                    <input type="text" name="FatherName" id="fatherName">
+                </div>
+                <div class="form-group">
+                    <label>Mother's Name</label>
+                    <input type="text" name="MotherName" id="motherName">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Siblings Name</label>
+                <input type="text" name="SiblingsName">
+            </div>
+        </div>
+
+        <div class="section-title">Address & Transport</div>
+
+        <div class="form-group">
+            <label>Current Address</label>
+            <input type="text" name="CurrentAddress" required>
+        </div>
+        <div class="form-group">
+            <label>Permanent Address</label>
+            <input type="text" name="PermanentAddress" required>
+        </div>
+
+        <div class="form-group">
+            <label>Transport Type</label>
+            <select name="TransportType" id="transportType" required onchange="toggleTransportFields()">
+                <option value="">Select...</option>
+                <option value="Own-Transport">Own Transport</option>
+                <option value="Company-Transport">Company Transport</option>
+            </select>
+        </div>
+
+        <div class="form-group hidden" id="wayOfTransportGroup">
+            <label>Way Of Transport (Bike/Bus/etc)</label>
+            <input type="text" name="WayOfTransport" id="wayOfTransport">
+        </div>
+
+        <div class="form-group hidden" id="cabNoGroup">
+            <label>Cab Route / No</label>
+            <input type="text" name="CabNo" id="cabNo">
+        </div>
+
+        <div class="section-title">Employment & Reference</div>
+
+        <div class="form-group">
+            <label>Previous Employment</label>
+            <select name="PreviousEmployment" id="prevEmployment" required onchange="toggleEmploymentFields()">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+        </div>
+
+        <div id="employmentFields" class="hidden">
+            <div class="form-group">
+                <label>Previous Organization</label>
+                <input type="text" name="PrevOrganization" id="prevOrg">
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Previous Designation</label>
+                    <input type="text" name="PrevDesignation" id="prevDesig">
+                </div>
+                <div class="form-group">
+                    <label>Experience (Years/Months)</label>
+                    <input type="text" name="PrevExperience" id="prevExp">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Referred by Employee?</label>
+            <select name="Referral" id="referral" required onchange="toggleReferralFields()">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+        </div>
+
+        <div id="referralFields" class="hidden row">
+            <div class="form-group">
+                <label>Referrer User ID</label>
+                <input type="text" name="ReferralUserID" id="refUserId">
+            </div>
+            <div class="form-group">
+                <label>Referrer Name</label>
+                <input type="text" name="ReferralName" id="refName">
+            </div>
+        </div>
+        
+        <div class="section-title">Job Details</div>
+        
+        <div class="row">
+            <div class="form-group">
+                <label>Type</label>
+                <select name="Type" required>
+                    <option value="">Select...</option>
+                    <option value="OnRole">OnRole</option>
+                    <option value="OffRole">OffRole</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Interviewed By</label>
+                <input type="text" name="InterviewedBy" required>
+            </div>
+        </div>
+
+        <div class="section-title">Nominee Details</div>
+        <div class="form-group">
+            <label>Nominee Name</label>
+            <input type="text" name="NomineeName" required>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Nominee Relation</label>
+                <input type="text" name="NomineeRelation" required>
+            </div>
+            <div class="form-group">
+                <label>Nominee DOB</label>
+                <input type="date" name="NomineeDOB" required>
+            </div>
+        </div>
+
+        <button type="submit">Generate QR Code</button>
+    </form>
+</div>
+
+<div class="container hidden" id="qr-container">
+    <h1>Your QR Code is Ready!</h1>
+    <p class="subtitle">Show this screen to the HR Scanner.</p>
+    
+    <div id="qrcode"></div>
+    
+    <button onclick="window.location.reload()" style="background-color: var(--text-muted);">Start Over</button>
+</div>
+
+<script>
+    function toggleFamilyFields() {
+        const marital = document.getElementById('maritalStatus').value;
+        const marriedFields = document.getElementById('marriedFields');
+        const unmarriedFields = document.getElementById('unmarriedFields');
+        
+        if (marital === 'Married') {
+            marriedFields.classList.remove('hidden');
+            unmarriedFields.classList.add('hidden');
+        } else {
+            marriedFields.classList.add('hidden');
+            unmarriedFields.classList.remove('hidden');
+        }
+    }
+
+    function toggleTransportFields() {
+        const transport = document.getElementById('transportType').value;
+        const wayGroup = document.getElementById('wayOfTransportGroup');
+        const cabGroup = document.getElementById('cabNoGroup');
+
+        if (transport === 'Own-Transport') {
+            wayGroup.classList.remove('hidden');
+            cabGroup.classList.add('hidden');
+        } else if (transport === 'Company-Transport') {
+            wayGroup.classList.add('hidden');
+            cabGroup.classList.remove('hidden');
+        } else {
+            wayGroup.classList.add('hidden');
+            cabGroup.classList.add('hidden');
+        }
+    }
+
+    function toggleEmploymentFields() {
+        const prev = document.getElementById('prevEmployment').value;
+        const fields = document.getElementById('employmentFields');
+        if (prev === 'Yes') {
+            fields.classList.remove('hidden');
+        } else {
+            fields.classList.add('hidden');
+        }
+    }
+
+    function toggleReferralFields() {
+        const ref = document.getElementById('referral').value;
+        const fields = document.getElementById('referralFields');
+        if (ref === 'Yes') {
+            fields.classList.remove('hidden');
+        } else {
+            fields.classList.add('hidden');
+        }
+    }
+
+    document.getElementById('joinerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Gather all form data
+        const formData = new FormData(e.target);
+        const dataObj = {};
+        formData.forEach((value, key) => {
+            // Clean empty values to keep QR compact
+            if(value.trim() !== "") {
+                dataObj[key] = value.trim();
+            }
+        });
+
+        // Add a signature so the server knows it's a valid QR code
+        dataObj._isJoinerData = true;
+
+        // Convert to compact JSON string
+        const jsonString = JSON.stringify(dataObj);
+
+        // Hide form, show QR
+        document.getElementById('form-container').classList.add('hidden');
+        document.getElementById('qr-container').classList.remove('hidden');
+
+        // Generate QR code
+        const qrcodeContainer = document.getElementById('qrcode');
+        qrcodeContainer.innerHTML = ""; // clear previous
+        
+        new QRCode(qrcodeContainer, {
+            text: jsonString,
+            width: 300,
+            height: 300,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.L // Low error correction to allow more data capacity
+        });
+    });
+</script>
+
+</body>
+</html>
